@@ -1,0 +1,89 @@
+/* You can add global styles to this file, and also import other style files */
+.active
+{    
+    font-weight: bold;    
+    background-color: #94A3B1;    
+}
+
+.body-content { 
+    min-height: 550px;
+}
+body{
+    margin:0 10px 10px 10px; 
+}
+
+navbar  {
+    background-color: #DDDDDD;
+}
+
+footer {    
+    margin-top: 20px;
+    padding: 25px;    
+    background-color: #DDDDDD;
+    text-align: center;    
+}
+
+.container
+{
+ margin-top:20px;   
+}
+
+.mandatory{ color: red;}
+
+/* Custom styles */
+/* MODAL STYLES
+-------------------------------*/
+modal {
+    /* modals are hidden by default */  
+    display: none;
+  }
+
+  modal .modal-container {
+    /* modal container fixed across whole screen */
+  
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    /* z-index must be higher than .modal-background */
+  
+    z-index: 1000;
+    /* enables scrolling for tall modals */
+  
+    overflow: auto;
+  }
+  modal .modal-container .modal-body {
+    padding: 20px;
+    background: #fff;
+    /* margin exposes part of the modal background */
+  
+    margin:5% 10% 5% 20%;
+    
+    min-height: 80%;  
+    width: 60%;
+    overflow: scroll;     
+  }
+  modal .modal-background {
+    /* modal background fixed across whole screen */
+  
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    /* semi-transparent black  */
+  
+    background-color: #000;
+    opacity: 0.75;
+    /* z-index must be below .modal and above everything else  */
+    
+    z-index: 900;
+  }
+  
+  body.modal-open {
+    /* body overflow is hidden to hide main scrollbar when modal window is open */
+  
+    overflow: hidden;
+  }
+  

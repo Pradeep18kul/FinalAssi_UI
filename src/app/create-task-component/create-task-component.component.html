@@ -1,0 +1,291 @@
+<div class="page-header">
+    <h3>
+        {{pageTitle}}
+    </h3>
+</div>
+
+<div class="{{alertType}}" *ngIf="showAlert">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+    {{pageMessage}}
+</div>
+
+<form class="form-group" [formGroup]="taskForm">
+    <div class="form-group row">
+        <label for="project" class="col-sm-2 col-form-label" i18n="@@Project"> Project <span class="mandatory">*</span></label>
+        <div class="col-sm-6">
+            <div class="input-group">
+                <input type="hidden" name="projectId" id="projectId" formControlName="projectId">
+                <input type="text" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.projectName.errors }" name="projectName"
+                    formControlName="projectName" readonly id="projectName">
+
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" name="btnSearchProject"  [disabled]="isEditMode" id="btnSearchProject" (click)="openModal('project-modal')" i18n="@@Search">Search</button>
+                </span>
+
+                <div *ngIf="submitted && f.projectName.errors" class="invalid-feedback">
+                    <div *ngIf="f.projectName.errors.required" i18n="@@ProjectNameRequired">Project Name is required</div>
+                </div>
+            </div><!-- /input-group -->
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <input type="hidden" name="taskId" id="taskId" formControlName="taskId">
+        <label for="taskName" class="col-sm-2 col-form-label"> <span i18n="@@Task">Task </span> <span class="mandatory">*</span> </label>
+        <div class="col-sm-6">
+
+            <input type="text" class="form-control" id="taskName" formControlName="taskName" maxlength="50" name="taskName" placeholder="Task Name"
+                [ngClass]="{ 'is-invalid': submitted && f.taskName.errors }">
+
+            <div *ngIf="submitted && f.taskName.errors" class="invalid-feedback">
+                <div *ngIf="f.taskName.errors.required" i18n="@@TaskNameRequired">Task Name is required</div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-3">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="parentTask" (change)="onParentTaskSelected($event)">
+                <label class="form-check-label" for="gridCheck1" i18n="@@ParentTask"> Parent Task</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="priority" class="col-sm-2 col-form-label" i18n="@@Priority">Priority</label>
+        <div class="col-sm-4">
+            <div class="input-group">
+                <span class="inline">0</span>
+                <input type="range" class="form-control" id="priority" formControlName="priority" name="priority" min="0" max="100" value="0"
+                    (change)="onPriorityChange($event)" step="1">&nbsp; &nbsp; <span class="inline">{{priority}}</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="form-group row">
+        <label for="parentTask" class="col-sm-2 col-form-label" i18n="@@ParentTask">Parent Task</label>
+        <div class="col-sm-6">
+            <div class="input-group">
+                <input type="hidden" name="parentTaskId" id="parentTaskId" formControlName="parentTaskId">
+
+                <input type="text" name="parentTaskName" readonly formControlName="parentTaskName" id="parentTaskName" class="form-control">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" (click)="openModal('parent-task-modal')" name="btnSearchParentTask" i18n="@@Search">Search</button>
+                </span>
+            </div><!-- /input-group -->
+        </div>
+    </div>
+
+
+    <div class="form-group row">
+        <label for="startDate" class="col-sm-2 col-form-label" i18n="@@StartDate">Start Date</label>
+
+        <div class="col-sm-3">
+            <input type="date" class="form-control" formControlName="startDate" name="startDate" />
+        </div>
+
+        <div class="col-sm-1"><label class="form-check-label" for="endDate" i18n="@@EndDate">End date</label></div>
+        <div class="col-sm-3">
+            <input type="date" class="form-control" formControlName="endDate" name="endDate" />
+        </div>
+
+    </div>
+
+    <div class="form-group row">
+        <label for="managerName" class="col-sm-2 col-form-label" i18n="@@User">User</label>
+        <div class="col-sm-6">
+            <div class="input-group">
+                <input type="hidden" name="managerId" id="managerId" formControlName="managerId">
+                <input type="text" name="managerName" id="managerName" readonly formControlName="managerName" class="form-control">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" (click)="openModal('manager-modal')" name="btnSearchManager" i18n="@@Search">Search</button>
+                </span>
+            </div><!-- /input-group -->
+        </div>
+    </div>
+    <!-- <p>Form values: {{ taskForm.value | json }}</p> -->
+
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-2">
+            <button class="btn btn-success btn-block" type="button" (click)="onSubmit()">{{addButtonTitle}}</button>
+        </div>
+        <div class="col-sm-2">
+            <button class="btn btn-default btn-block" type="button" (click)="resetForm()">Reset</button>
+        </div>
+    </div>
+</form>
+
+<!-- Project Modal  -->
+<modal id="project-modal">
+    <div class="modal-container">
+        <div class="modal-body">
+            <div class="container">
+                <div class="row">
+                    <div>
+                        <h3 i18n="@@BrowseProjects">Browse - Projects</h3>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col col-md-1" i18n="@@Search">Search</div>
+                    <div class="col col-md-11">
+                        <input type="text" id="searchProject" name="searchProject" class="form-control" [(ngModel)]="searchProject" /></div>
+                </div>
+                <br/>
+
+                <div class="row">
+                    <div class="col col-md-2"><strong><span i18n="@@FieldProjectId">Project Id</span></strong></div>
+                    <div class="col col-md-6"><strong><span i18n="@@FieldProject">Project</span></strong></div>
+                    <div class="col col-md-2"><strong><span i18n="@@FieldPriority">Priority</span></strong></div>
+                    <div class="col col-md-2"><strong><span i18n="@@FieldAction">Action</span></strong></div>
+                </div>
+
+                <ul class="list-group">
+                    <li *ngFor="let project of projects | FilterPipe: searchProject" class="list-group-item">
+                        <div class="row">
+                            <div class="col col-md-2">{{ project.ProjectId }}</div>
+                            <div class="col col-md-6">{{ project.ProjectName }}</div>
+                            <div class="col col-md-2">{{ project.Priority }}</div>
+                            <div class="col col-md-2">
+                                <button class="btn btn-primary btn-block" (click)="setSelectedProject(project); closeModal('project-modal');" i18n="@@Select">
+                                    Select</button>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li *ngIf="(projects | FilterPipe: searchProject).length == 0" class="list-group-item">
+                        <div class="alert alert-info" role="alert" i18n="@@ThereAreNoItems">
+                            There are no items to display.
+                        </div>
+                    </li>
+
+                </ul>
+                <br />
+
+                <div class="row">
+                    <div class="col-md-offset-10 col-md-2">
+                        <button class="btn btn-default btn-block" (click)="closeModal('project-modal');" i18n="@@Close">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-background"></div>
+</modal>
+
+
+<modal id="manager-modal">
+    <div class="modal-container">
+        <div class="modal-body">
+            <div class="container">
+                <div class="row">
+                    <div>
+                        <h3 i18n="@@BrowseUser">Browse - User</h3>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col col-md-1" i18n="@@Search">Search</div>
+                    <div class="col col-md-11">
+                        <input type="text" id="searchManager" name="searchManager" class="form-control" [(ngModel)]="searchManager" /></div>
+                </div>
+                <br/>
+
+                <div class="row">
+                    <div class="col col-md-2"><strong i18n="@@FieldId">Id</strong></div>
+                    <div class="col col-md-4"><strong i18n="@@FieldFirstName">First Name</strong></div>
+                    <div class="col col-md-4"><strong i18n="@@FieldLastName">Last Name</strong></div>
+                    <div class="col col-md-2"><strong i18n="@@Action">Action</strong></div>
+                </div>
+
+                <ul class="list-group">
+                    <li *ngFor="let manager of managers | FilterPipe: searchManager" class="list-group-item">
+                        <div class="row">
+                            <div class="col col-md-2">{{ manager.UserId }}</div>
+                            <div class="col col-md-4">{{ manager.FirstName }}</div>
+                            <div class="col col-md-4">{{ manager.LastName }}</div>
+                            <div class="col col-md-2">
+                                <button class="btn btn-primary btn-block" (click)="setSelectedManager(manager); closeModal('manager-modal');" i18n="@@Select" >
+                                    Select</button>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li *ngIf="(managers | FilterPipe: searchManager).length == 0" class="list-group-item">
+                        <div class="alert alert-info" role="alert" i18n="@@ThereAreNoItems">
+                            There are no items to display.
+                        </div>
+                    </li>
+                </ul>
+                <br />
+                <div class="row">
+                    <div class="col-md-offset-10 col-md-2">
+                        <button class="btn btn-default btn-block" (click)="closeModal('manager-modal');" i18n="@@Close">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-background"></div>
+</modal>
+
+
+
+<modal id="parent-task-modal">
+    <div class="modal-container">
+        <div class="modal-body">
+            <div class="container">
+                <div class="row">
+                    <div>
+                        <h3 i18n="@@BrowseParentTask">Browse - Parent Task</h3>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col col-md-1" i18n="@@Search">Search</div>
+                    <div class="col col-md-11">
+                        <input type="text" id="searchParentTask" name="searchParentTask" class="form-control" [(ngModel)]="searchParentTask" /></div>
+                </div>
+                <br/>
+
+                <div class="row">
+                    <div class="col col-md-2"><strong i18n="@@FieldId">Id</strong></div>
+                    <div class="col col-md-8"><strong i18n="@@FieldParentTask">Parent Task</strong></div>
+                    <div class="col col-md-2"><strong i18n="@@FieldAction">Action</strong></div>
+                </div>
+
+                <ul class="list-group">
+                    <li *ngFor="let parentTask of parentTasks | FilterPipe: searchParentTask" class="list-group-item">
+                        <div class="row">
+                            <div class="col col-md-2">{{ parentTask.ParentTaskId }}</div>
+                            <div class="col col-md-8">{{ parentTask.ParentTaskName }}</div>
+                            <div class="col col-md-2">
+                                <button class="btn btn-primary btn-block" (click)="setSelectedParentTask(parentTask); closeModal('parent-task-modal');" i18n="@@Select">
+                                    Select</button>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li *ngIf="(parentTasks | FilterPipe: searchParentTask).length == 0" class="list-group-item">
+                        <div class="alert alert-info" role="alert" i18n="@@ThereAreNoItems">
+                            There are no items to display.
+                        </div>
+                    </li>
+                </ul>
+                <br />
+                <div class="row">
+                    <div class="col-md-offset-10 col-md-2">
+                        <button class="btn btn-default btn-block" (click)="closeModal('parent-task-modal');" i18n="@@Close">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-background"></div>
+</modal>

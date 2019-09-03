@@ -1,0 +1,153 @@
+<modal id="custom-modal-1">
+
+  <div class="modal-container">
+    <div class="modal-body">
+
+      <div class="container">
+
+        <div class="row">
+          <div>
+            <h3 i18n="@@BrowserManager">Browse - Manager</h3>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col col-md-1" i18n="@@Search">Search</div>
+          <div class="col col-md-11">
+            <input type="text" id="searchManager" name="searchManager" class="form-control" [(ngModel)]="searchManager" /></div>
+        </div>
+        <br/>
+
+        <div class="row">
+          <div class="col col-md-2"><strong> <span i18n="@@FieldManagerId">Manager Id</span></strong></div>
+          <div class="col col-md-3"><strong><span i18n="@@FieldFirstName">First Name</span></strong></div>
+          <div class="col col-md-3" ><strong> <span i18n="@@FieldLastName">Last Name</span></strong></div>
+          <div class="col col-md-2"><strong><span i18n="@@FieldAction">Action</span></strong></div>
+        </div>
+
+        <ul class="list-group">
+          <li *ngFor="let manager of managers | FilterPipe: searchManager" class="list-group-item">
+            <div class="row">
+              <div class="col col-md-2">{{ manager.UserId }}</div>
+              <div class="col col-md-3">{{ manager.FirstName }}</div>
+              <div class="col col-md-3">{{ manager.LastName }}</div>
+              <div class="col col-md-2">
+                <button class="btn btn-primary btn-block" (click)="setSelectedManager(manager); closeModal('custom-modal-1');" i18n="@@Select">
+                  Select</button>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <br />
+        <div class="row">
+          <div class="col-md-offset-10 col-md-2">
+            <button class="btn btn-default btn-block" (click)="closeModal('custom-modal-1');"  i18n="@@Close">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-background"></div>
+</modal>
+
+<div class="page-header">
+  <h3>
+    {{pageTitle}}
+  </h3>
+</div>
+
+<div class="{{alertType}}" *ngIf="showAlert">
+  <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+  {{pageMessage}}
+</div>
+
+<form class="form-group" [formGroup]="projectForm" novalidate>
+  <input type="hidden" id="" formControlName="projectId" value="">
+  <div class="form-group row">
+    <label for="projectName" class="col-sm-2 col-form-label" ><span i18n="@@Project"> Project</span> <span class="mandatory">*</span></label>
+    <div class="col-sm-9">
+      <input type="text" class="form-control" formControlName="projectName" [ngClass]="{ 'is-invalid': submitted && f.projectName.errors }"
+        required id="projectName" maxlength="50" name="projectName" placeholder="Project Name">
+
+      <div *ngIf="submitted && f.projectName.errors" class="invalid-feedback">
+        <div *ngIf="f.projectName.errors.required" i18n="@@ProjectNameRequired">Project Name is required</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-3">
+      <div class="form-check">
+        <span class="mandatory">*</span>
+        <input class="form-check-input" type="checkbox" formControlName="setStartAndEndDate" (change)="changeDate($event)" id="chkSetStartAndEndDate"
+          name="chkSetStartAndEndDate">
+        <label class="form-check-label" for="gridCheck1" i18n="@@CheckStartAndEndState"> Check Start and End date</label>
+      </div>
+    </div>
+
+    <div class="col-sm-3">
+      <input type="date" class="form-control" formControlName="startDate" id="startDate" name="startDate" />
+    </div>
+
+    <div class="col-sm-3">
+      <input type="date" class="form-control" formControlName="endDate" id="endDate" name="endDate" />
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="priority" class="col-sm-2 col-form-label" i18n="@@Priority">Priority</label>
+    <div class="col-sm-4">
+      <div class="input-group">
+        <span class="inline">0</span>
+        <input type="range" class="form-control" id="priority" formControlName="priority" name="priority" min="0" max="100" value="0"
+          (change)="onPriorityChange($event)" step="1">&nbsp; &nbsp; <span class="inline">{{priority}}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="manager" class="col-sm-2 col-form-label"> <span i18n="@@Manager">Manager </span><span class="mandatory">*</span></label>
+    <div class="col-sm-4">
+      <div class="input-group">
+        <input type="text" class="form-control" readonly formControlName="manager" required name="manager" [ngClass]="{ 'is-invalid': submitted && f.manager.errors }"
+          id="manager">
+
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button" (click)="openModal('custom-modal-1')" i18n="@@Search" >Search</button>
+        </span>
+
+        <input type="hidden" id="userId" name="userId" formControlName="userId">
+
+        <div *ngIf="submitted && f.manager.errors" class="invalid-feedback">
+          <div *ngIf="f.manager.errors.required" i18n="@@ManagerRequired">Manager name is required</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-2">
+      <button class="btn btn-success btn-block" type="submit" (click)="onSubmit()">{{addButtonTitle}}</button>
+    </div>
+
+    <div class="col-sm-2">
+      <button class="btn btn-default btn-block" type="button" (click)="resetForm()" i18n="@@Reset">Reset</button>
+    </div>
+  </div>
+
+  <!-- <p>Form values: {{ projectForm.value | json }}</p> -->
+
+</form>
+
+
+<br/>
+<div class="page-header">
+  <h3 i18n="@@Projects">
+    Projects
+  </h3>
+</div>
+
+<app-project-list-component></app-project-list-component>

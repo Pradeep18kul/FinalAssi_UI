@@ -1,0 +1,143 @@
+<div class="page-header">
+  <h3 i18n="@@ViewTasks">
+    View Tasks
+  </h3>
+</div>
+<div class="row">
+  <div class="col-sm-5">
+    <div class="input-group col-md-12">
+      <input type="text" class="form-control" [(ngModel)]="projectName" [ngModelOptions]="{standalone: true}" id="projectName"
+        readonly>
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button" (click)="openModal('project-modal');" i18n="@@Search">Search</button>
+      </span>
+    </div>
+  </div>
+
+  <div class="col-md-7">
+    <div class="btn-group btn-group-toggle col-md-12" data-toggle="buttons">
+      <div class="col-md-2">
+        <label class="col-form-label" i18n="@@SortByTitle">Sort By:</label>
+      </div>
+      <label class="btn btn-secondary  col-md-2 active" (click)="handleSortBy('startDate')">
+        <input type="radio" name="options" id="option1" checked> <span i18n="@@StartDate"> Start Date</span>
+      </label>
+      <label class="btn btn-secondary  col-md-2" (click)="handleSortBy('endDate')">
+        <input type="radio" name="options" id="option2"><span i18n="@@EndDate">End Date</span>
+      </label>
+      <label class="btn btn-secondary  col-md-2" (click)="handleSortBy('priority')">
+        <input type="radio" name="options" id="option3"> <span i18n="@@Priority"> Pririty</span>
+      </label>
+      <label class="btn btn-secondary col-md-2" (click)="handleSortBy('completed')">
+        <input type="radio" name="options" id="option3"> <span i18n="@@Completed"> Completed</span>
+      </label>
+    </div>
+  </div>
+</div>
+
+
+
+<br>
+<div class="row">
+  <div class="col-md-2 offset-md-11">
+    {{(tasks | FilterPipe: projectName).length}} task(s).
+  </div>
+</div>
+
+<ul class="list-group">
+  <div class="row">
+    <div class="col col-md-3"><strong><span i18n="@@FieldTask"> Task</span></strong></div>
+    <div class="col col-md-3"><strong><span i18n="@@FieldParent"> Parent</span></strong></div>
+    <div class="col col-md-1"><strong><span i18n="@@FieldPriority"> Priority</span></strong></div>
+    <div class="col col-md-1"><strong><span i18n="@@FieldStartDate"> Start</span></strong></div>
+    <div class="col col-md-1"><strong><span i18n="@@FieldEndDate"> End</span></strong></div>
+    <div class="col col-md-2"><strong><span i18n="@@Action"> Action</span></strong></div>
+  </div>
+
+  <li *ngFor="let task of tasks | FilterPipe: projectName" class="list-group-item">
+    <div class="row">
+      <div class="col col-md-3">{{ task.TaskName }}</div>
+      <div class="col col-md-3">{{ task.ParentTaskName }}</div>
+      <div class="col col-md-1">{{ task.Priority }}</div>
+      <div class="col col-md-1">{{ task.StartDate | date:'MM/dd/yyyy' }}</div>
+      <div class="col col-md-1">{{ task.EndDate | date:'MM/dd/yyyy' }}</div>
+      <div class="col col-md-1">
+        <button class="btn btn-success btn-block" type="button" [disabled]="isCompleted(task)" (click)="editTask(task)" i18n="@@Edit">Edit</button>
+      </div>
+      <div class="col col-md-1">
+        <button class="btn btn-danger" type="button" [disabled]="isCompleted(task)" (click)="endTask(task);" i18n="@@EndTask">End Task</button>
+      </div>
+    </div>
+  </li>
+
+  <li *ngIf="(tasks | FilterPipe: projectName).length == 0" class="list-group-item">
+    <div class="alert alert-info" role="alert" i18n="@@ThereAreNoItems">
+      There are no items to display.
+    </div>
+  </li>
+</ul>
+
+
+<modal id="project-modal">
+  <div class="modal-container">
+    <div class="modal-body">
+      <div class="container">
+        <div class="row">
+          <div>
+            <h3 i18n="@@BrowseProjects">Browse - Projects</h3>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col col-md-1" i18n="@@Search">Search</div>
+          <div class="col col-md-11">
+            <input type="text" id="searchProject" class="form-control" [(ngModel)]="searchProject" /></div>
+        </div>
+        <br/>
+
+        <div class="row">
+          <div class="col-md-2 offset-md-10">
+            {{(projects | FilterPipe: searchProject).length}} project(s).
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col col-md-2"><strong i18n="@@ProjectId">Project Id</strong></div>
+          <div class="col col-md-6"><strong i18n="@@Project">Project</strong></div>
+          <div class="col col-md-2"><strong i18n="@@Priority">Priority</strong></div>
+          <div class="col col-md-2"><strong i18n="@@Action">Action</strong></div>
+        </div>
+
+        <ul class="list-group">
+          <li *ngFor="let project of projects | FilterPipe: searchProject" class="list-group-item">
+            <div class="row">
+              <div class="col col-md-2">{{ project.ProjectId }}</div>
+              <div class="col col-md-6">{{ project.ProjectName }}</div>
+              <div class="col col-md-2">{{ project.Priority }}</div>
+              <div class="col col-md-2">
+                <button class="btn btn-primary btn-block" (click)="setSelectedProject(project); closeModal('project-modal');" i18n="@@Select">
+                  Select</button>
+              </div>
+            </div>
+          </li>
+
+          <li *ngIf="(projects | FilterPipe: searchProject).length == 0" class="list-group-item">
+            <div class="alert alert-info" role="alert" i18n="@@ThereAreNoItems">
+              There are no items to display.
+            </div>
+          </li>
+
+        </ul>
+        <br />
+        <div class="row">
+          <div class="col-md-offset-10 col-md-2">
+            <button class="btn btn-default btn-block" (click)="closeModal('project-modal');" i18n="@@Close">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-background"></div>
+</modal>
+
+<input type="hidden" [(ngModel)]="sortBy" value="startDate" id="sortBy" name="sortBy">

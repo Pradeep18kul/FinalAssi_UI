@@ -1,0 +1,61 @@
+<div class="row">
+  <div class="col-md-3">
+    <input type="text" class="form-control" [(ngModel)]="searchQuery" name="search" id="search" placeholder="Search">
+  </div>
+  <div class="col-md-9">
+    <div class="btn-group btn-group-toggle col-md-12" data-toggle="buttons">
+      <div class="col-md-2">
+        <label class="col-form-label" i18n="@@SortByTitle">Sort By: </label>
+      </div>
+      <label class="btn btn-secondary  col-md-3 active" (click)="handleSortBy('firstName')">
+        <input type="radio" name="options" id="option1" autocomplete="off" value="firstName" checked> 
+       <span i18n="@@FirstName"> First Name</span>
+      </label>
+      <label class="btn btn-secondary  col-md-3" (click)="handleSortBy('lastName')">
+        <input type="radio" name="options" id="option2" autocomplete="off" value="lastName"> <span  i18n="@@LastName">Last Name</span>
+      </label>
+      <label class="btn btn-secondary  col-md-3" (click)="handleSortBy('employeeId')">
+        <input type="radio" name="options" id="option3" autocomplete="off" value="employeeId"><span i18n="@@EmployeeId">Employee Id</span>
+      </label>
+    </div>
+  </div>
+
+  <input type="hidden" [(ngModel)]="sortBy" value="firstName" id="sortBy" name="sortBy">
+
+</div>
+<br>
+
+<div class="row">
+  <div class="col-md-2 offset-md-11">
+    {{(users | FilterPipe: searchQuery).length}} user(s).
+  </div>
+</div>
+
+<ul class="list-group">
+
+  <li *ngFor="let user of users | FilterPipe: searchQuery" class="list-group-item">
+    <div class="row">
+      <div class="col col-md-10">
+        <input type="hidden" value="{{user.UserId }}" name="empId" id="empId">
+        <p>{{ user.FirstName }} </p>
+        <p>{{ user.LastName }}</p>
+        <p>{{ user.EmployeeId }}</p>
+      </div>
+      <div class="col col-md-2">
+        <div class="row">
+          <div class="col col-12">
+            <button class="btn btn-success btn-block" type="button" (click)="editUser(user)" i18n="@@Edit">Edit</button>
+            <br>
+            <button class="btn btn-danger btn-block" type="button" (click)="deleteUser(user)" i18n="@@Delete">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </li>
+
+  <li *ngIf="(users | FilterPipe: searchQuery).length == 0" class="list-group-item">
+    <div class="alert alert-info" role="alert" i18n="@@ThereAreNoItems">
+      There are no items to display.
+    </div>
+  </li>
+</ul>

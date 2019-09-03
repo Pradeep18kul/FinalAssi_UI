@@ -1,0 +1,80 @@
+<div class="page-header">
+  <h3>
+    {{pageTitle}}
+  </h3>
+</div>
+
+<div class="{{alertType}}" *ngIf="showAlert" >
+    <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+    {{pageMessage}}
+</div>
+
+<form class="form-group" [formGroup]="userForm">
+  <input type="hidden" id="userId" formControlName="userId" value="">
+
+  <div class="form-group row">
+    <label for="firstName" class="col-sm-2 col-form-label" i18n="@@FirstName">First Name</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" id="firstName" maxlength="50"
+        formControlName="firstName" name="firstName" placeholder="First Name">
+
+      <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
+        <div *ngIf="f.firstName.errors.required" i18n="@@FirstNameRequired">First Name is required</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="lastName" class="col-sm-2 col-form-label" i18n="@@LastName">Last Name</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }"
+        id="lastName" maxlength="50"
+        formControlName="lastName"
+        name="lastName"
+        placeholder="Last Name">
+
+      <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
+        <div *ngIf="f.lastName.errors.required" i18n="@@LastNameRequired">Last Name is required</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="employeeId" class="col-sm-2 col-form-label" i18n="@@EmployeeId">Employee Id</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.employeeId.errors }" type="number" id="employeeId"
+        formControlName="employeeId" placeholder="Employee Id">
+
+      <div *ngIf="submitted && f.employeeId.errors" class="invalid-feedback">
+        <div *ngIf="f.employeeId.errors.required" i18n="@@EmployeeIdRequired">Employee Id is required and it should be greater than 0</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-2">
+      <button class="btn btn-success btn-block" type="button" (click)="onSubmit()">{{addButtonTitle}}</button>
+    </div>
+    <div class="col-sm-2">
+      <button class="btn btn-default btn-block" type="button" (click)="clearForm()">Reset</button>
+    </div>
+  </div>
+
+  <!-- <p>Form values: {{ userForm.value | json }}</p>   -->
+
+</form>
+
+<div class="page-header">
+  <h3 i18n="@@Users">
+    Users
+  </h3>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <!-- <app-user-list-component></app-user-list-component> -->
+  </div>
+</div>
